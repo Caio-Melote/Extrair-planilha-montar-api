@@ -9,17 +9,17 @@ create table franquias(
 
     id bigint not null auto_increment,
     nome varchar(100) not null,
-    totalUnidades bigint not null,
-    estadoSede varchar(50) not null,
+    total_unidades bigint not null,
+    estado_sede varchar(50) not null,
     email varchar(100) not null,
-    investimentoInicial DECIMAL(17, 2) not null,
+    investimento_inicial DECIMAL(17, 2) not null,
     subsegmento varchar(100) not null,
-    tipoNegocio varchar(100) not null,
-    ultimaAtualizacao datetime not null,
-    url varchar(100) not null,
+    tipo_negocio varchar(200) not null,
+    ultima_atualizacao datetime not null,
+    url varchar(1000) not null,
     ativo tinyint not null,
-    segmentoId bigint,
+    segmento_id bigint,
     primary key (id),
-    foreign key (segmentoId) references segmentos(id)
+    foreign key (segmento_id) references segmentos(id)
 );
 

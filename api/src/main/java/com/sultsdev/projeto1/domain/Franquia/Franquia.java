@@ -26,7 +26,7 @@ public class Franquia {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Long id;	
 	private String nome;
 	private int totalUnidades;
 	private String estadoSede;
@@ -39,7 +39,7 @@ public class Franquia {
 	private Boolean ativo;
 	
 	@ManyToOne
-    @JoinColumn(name = "segmentos")
+    @JoinColumn(name = "segmento_id")
     private Segmento segmento;
 	
 	
