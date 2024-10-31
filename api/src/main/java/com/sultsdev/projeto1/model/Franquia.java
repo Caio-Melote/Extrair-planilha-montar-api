@@ -1,8 +1,6 @@
-package com.sultsdev.projeto1.domain.Franquia;
+package com.sultsdev.projeto1.model;
 
 import java.time.LocalDateTime;
-
-import com.sultsdev.projeto1.domain.segmento.Segmento;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,12 +12,10 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Table(name = "franquias")
 @Entity(name = "Franquia")
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Franquia {

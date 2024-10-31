@@ -12,8 +12,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sultsdev.projeto1.domain.Franquia.Franquia;
-import com.sultsdev.projeto1.domain.segmento.Segmento;
+import com.sultsdev.projeto1.model.Franquia;
+import com.sultsdev.projeto1.model.Segmento;
 import com.sultsdev.projeto1.repository.FranquiaRepository;
 import com.sultsdev.projeto1.repository.SegmentoRepository;
 

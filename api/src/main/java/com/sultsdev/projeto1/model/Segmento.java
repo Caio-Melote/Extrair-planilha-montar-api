@@ -1,4 +1,4 @@
-package com.sultsdev.projeto1.domain.segmento;
+package com.sultsdev.projeto1.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
