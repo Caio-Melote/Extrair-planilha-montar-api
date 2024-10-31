@@ -1,5 +1,0 @@
-package com.sultsdev.projeto1.repository;
-
-public interface FranquiaRepository {
-
-}
