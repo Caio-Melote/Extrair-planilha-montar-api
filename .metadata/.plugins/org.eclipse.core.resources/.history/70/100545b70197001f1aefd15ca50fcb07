@@ -1,0 +1,71 @@
+package com.sultsdev.projeto1.service;
+
+import java.io.IOException;
+import java.util.Iterator;
+
+import org.apache.poi.sl.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.sultsdev.projeto1.domain.Franquia.Franquia;
+import com.sultsdev.projeto1.domain.segmento.Segmento;
+import com.sultsdev.projeto1.repository.FranquiaRepository;
+import com.sultsdev.projeto1.repository.SegmentoRepository;
+
+@Service
+public class ExcelService {
+
+    @Autowired
+    private FranquiaRepository franquiaRepository;
+
+    @Autowired
+    private SegmentoRepository segmentoRepository; // Adicione o repositório de Segmento
+
+    public void importarFranquias(MultipartFile file) throws IOException {
+        Workbook workbook = WorkbookFactory.create(file.getInputStream());
+        Sheet sheet = (Sheet) workbook.getSheetAt(0);
+        Iterator<Row> rowIterator = sheet.iterator();
+
+        // Ignorar cabeçalho
+        if (rowIterator.hasNext()) {
+            rowIterator.next();
+        }
+
+        while (rowIterator.hasNext()) {
+            Row row = rowIterator.next();
+            Franquia franquia = new Franquia();
+            
+            franquia.setNome(row.getCell(0).getStringCellValue());
+            franquia.setTotalUnidades((int) row.getCell(1).getNumericCellValue());
+            franquia.setEstadoSede(row.getCell(2).getStringCellValue());
+            franquia.setEmail(row.getCell(3).getStringCellValue());
+            franquia.setInvestimentoInicial(row.getCell(4).getNumericCellValue());
+            franquia.setSubsegmento(row.getCell(5).getStringCellValue());
+            franquia.setTipoNegocio(row.getCell(7).getStringCellValue());
+            franquia.setUrl(row.getCell(8).getStringCellValue());
+            franquia.setUltimaAtualizacao(row.getCell(6).getLocalDateTimeCellValue());
+            franquia.setAtivo(true); // ou qualquer lógica que você queira aplicar
+
+            // Lógica para buscar ou criar o Segmento
+            String segmentoNome = row.getCell(5).getStringCellValue(); // Coluna SEGMENTO
+            Segmento segmento = segmentoRepository.findByNome(segmentoNome); // Supondo que você tenha esse método
+
+            if (segmento == null) {
+                segmento = new Segmento();
+                segmento.setNome(segmentoNome);
+                // Salve o segmento, se necessário, ou faça outra lógica
+                segmento = segmentoRepository.save(segmento);
+            }
+
+            franquia.setSegmento(segmento); // Associar a franquia ao segmento
+
+            franquiaRepository.save(franquia); // Salva a franquia no banco de dados
+        }
+        workbook.close();
+    }
+    
+}

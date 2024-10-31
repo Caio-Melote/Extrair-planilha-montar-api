@@ -1,0 +1,5 @@
+package com.sultsdev.projeto1.domain.segmento;
+
+public class Segmento {
+
+}

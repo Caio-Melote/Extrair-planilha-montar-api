@@ -1,0 +1,15 @@
+package com.sultsdev.projeto1.domain.segmento;
+
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+
+WqualsAndHashCode(of = "id")
+public class Segmento {
+	 @Id 
+	 @GeneratedValue(strategy = GenerationType.IDENTITY)
+	    private Long id;
+	    private String nome;
+}

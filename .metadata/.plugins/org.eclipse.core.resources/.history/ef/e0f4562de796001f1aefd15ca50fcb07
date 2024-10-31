@@ -1,0 +1,11 @@
+package com.sultsdev.projeto1.api;
+
+import org.springframework.web.bind.annotation.GetMapping;
+
+public class TesteController {
+	
+	@GetMapping
+	private String testando() {
+		return "<h1>Teste Funcionou</h1>";
+	}
+}

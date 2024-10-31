@@ -1,0 +1,27 @@
+package com.sultsdev.projeto1.domain.Franquia;
+
+import java.time.LocalDateTime;
+
+import com.sultsdev.projeto1.domain.segmento.Segmento;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Franquia {
+
+	private Long id;
+	private String nome;
+	private int totalUnidades;
+	private String estadoSede;
+	private String email;
+	private Double investimentoInicial;
+	private String subsegmento;
+	private String tipoNegocio;
+	private LocalDateTime ultimaAtualizacao;
+	private String url;
+	private Segmento segmento;
+}
