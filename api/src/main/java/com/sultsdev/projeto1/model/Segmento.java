@@ -24,6 +24,16 @@ public class Segmento {
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
+
+	public void atualizarInformacoes(Segmento segmento) {
+		if (segmento.getNome() != null) {
+            this.nome = segmento.getNome();
+        }
+	}
+	
+	public Segmento (Segmento dados) {
+		this.nome = dados.nome;
+	}
 	
 	
 }

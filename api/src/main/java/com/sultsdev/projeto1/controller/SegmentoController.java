@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,6 +25,15 @@ public class SegmentoController {
         var page = repository.findAll(paginacao).map(SegmentoListagem::new);
         return ResponseEntity.ok(page);
     }
-	
-	 //@GetMapping("/{nome}")
+		
+	@GetMapping("/{nome}")
+	public ResponseEntity<Page<SegmentoListagem>> detalhar(@PathVariable String nome, Pageable pageable) {
+	    var segmentos = repository.findByNomeContainingIgnoreCase(nome, pageable);
+	    if (segmentos.hasContent()) {
+	        return ResponseEntity.ok(segmentos.map(SegmentoListagem::new));
+	    } else {
+	        return ResponseEntity.notFound().build();
+	    }
+	}
+
 }
