@@ -15,9 +15,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DadosAtualizacaoFranquia {
-	
+
 	@NotNull
-	private Long id;	
+	private Long id;
 	private String nome;
 	private Integer totalUnidades;
 	private String estadoSede;

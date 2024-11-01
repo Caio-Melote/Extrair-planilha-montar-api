@@ -8,4 +8,5 @@ import com.sultsdev.projeto1.model.Franquia;
 
 public interface FranquiaRepository extends JpaRepository<Franquia, Long> {
 	Page<Franquia> findAllByAtivoTrue(Pageable paginacao);
+	
 }
