@@ -36,19 +36,19 @@ public class LeituraPlanilha {
 			FileInputStream file = new FileInputStream("src/main/resources/ABF-scraper.xlsx");
 			
 			@Cleanup
-			XSSFWorkbook wb = new XSSFWorkbook(file);
+			XSSFWorkbook workBook = new XSSFWorkbook(file);
 			
-			XSSFSheet ws = wb.getSheetAt(0);
+			XSSFSheet workSheet = workBook.getSheetAt(0);
 			
-			Iterator<Row> rowIterator = ws.iterator();
+			Iterator<Row> iteradorLinha = workSheet.iterator();
 			
-			if (rowIterator.hasNext()) {
-                rowIterator.next();
+			if (iteradorLinha.hasNext()) {
+                iteradorLinha.next();
             }
 
-			while (rowIterator.hasNext()) 
+			while (iteradorLinha.hasNext()) 
             {
-				 Row linha = rowIterator.next();
+				 Row linha = iteradorLinha.next();
 				 
 				 String segmentoNome = linha.getCell(5).getStringCellValue();
 				 				 

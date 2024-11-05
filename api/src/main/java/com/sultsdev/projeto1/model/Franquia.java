@@ -1,11 +1,9 @@
 package com.sultsdev.projeto1.model;
 
 import java.time.LocalDateTime;
-
 import com.sultsdev.projeto1.domain.dto.DadosAtualizacaoFranquia;
 import com.sultsdev.projeto1.domain.dto.DadosCadastroFranquia;
 import com.sultsdev.projeto1.repository.SegmentoRepository;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,6 +23,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class Franquia {
 
 	@Id
@@ -43,10 +43,6 @@ public class Franquia {
 	@ManyToOne
 	@JoinColumn(name = "segmento_id")
 	private Segmento segmento;
-
-	public void excluir() {
-		this.ativo = false;
-	}
 
 	public void atualizarInformacoes(DadosAtualizacaoFranquia dados, SegmentoRepository segmentoRepository) {
 		this.ultimaAtualizacao = LocalDateTime.now();
@@ -105,6 +101,16 @@ public class Franquia {
 		this.segmento = new Segmento(dados.getSegmento());
 
 		this.ativo = true;
+	}
+
+	public void excluir() {
+		this.ativo = false;
+		this.ultimaAtualizacao = LocalDateTime.now();
+	}
+
+	public void reativar() {
+		this.ativo = true;
+		this.ultimaAtualizacao = LocalDateTime.now();
 	}
 
 }

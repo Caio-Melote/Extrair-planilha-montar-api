@@ -8,18 +8,18 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sultsdev.projeto1.service.LeituraPlanilha;
 
 @RestController
-@RequestMapping("/teste")
-public class TesteController {
+@RequestMapping("/popularbanco")
+public class PopularBancoController {
 	
 	@Autowired
-	LeituraPlanilha planilhaTeste;
+	LeituraPlanilha planilha;
 	
 	
 	@GetMapping
-	private String testando() {
+	private String populando() {
 		
-		planilhaTeste.lerPlanilha();
+		planilha.lerPlanilha();
 		
-		return "<h1>!Primeiro teste!</h1>";
+		return "<h1>Banco populado com sucesso!</h1>";
 	}
 }

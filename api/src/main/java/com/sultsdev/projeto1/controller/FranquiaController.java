@@ -42,10 +42,10 @@ public class FranquiaController {
 		return ResponseEntity.ok(page);
 	}
 
+	@SuppressWarnings("rawtypes")
 	@PostMapping
 	@Transactional
-	public ResponseEntity<FranquiaListagem> cadastrar(@RequestBody @Valid DadosCadastroFranquia dados,
-			UriComponentsBuilder uriBuilder) {
+	public ResponseEntity cadastrar(@RequestBody @Valid DadosCadastroFranquia dados, UriComponentsBuilder uriBuilder) {
 		Segmento segmentoExistente = segmentoRepository.findByNome(dados.getSegmento().getNome());
 
 		Segmento segmento;
@@ -75,10 +75,11 @@ public class FranquiaController {
 //
 //        return ResponseEntity.ok(new FranquiaListagem(franquia));
 //    }
-
+	
+	@SuppressWarnings("rawtypes")
 	@PutMapping
 	@Transactional
-	public ResponseEntity<FranquiaListagem> atualizar(@RequestBody @Valid DadosAtualizacaoFranquia dados) {
+	public ResponseEntity atualizar(@RequestBody @Valid DadosAtualizacaoFranquia dados) {
 		var franquiaOptional = repository.findById(dados.getId());
 		if (franquiaOptional.isEmpty()) {
 			return ResponseEntity.notFound().build();
@@ -92,11 +93,22 @@ public class FranquiaController {
 		return ResponseEntity.ok(new FranquiaListagem(franquia));
 	}
 
+	@SuppressWarnings("rawtypes")
 	@DeleteMapping("/{id}")
 	@Transactional
 	public ResponseEntity excluir(@PathVariable Long id) {
 		var franquia = repository.getReferenceById(id);
 		franquia.excluir();
+
+		return ResponseEntity.noContent().build();
+	}
+
+	@SuppressWarnings("rawtypes")
+	@PutMapping("/{id}")
+	@Transactional
+	public ResponseEntity reativar(@PathVariable Long id) {
+		var franquia = repository.getReferenceById(id);
+		franquia.reativar();
 
 		return ResponseEntity.noContent().build();
 	}
