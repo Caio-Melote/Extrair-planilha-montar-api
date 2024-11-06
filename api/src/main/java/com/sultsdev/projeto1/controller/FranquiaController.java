@@ -36,9 +36,10 @@ public class FranquiaController {
 
 	@Autowired
 	private SegmentoRepository segmentoRepository;
-
+	
+	@SuppressWarnings("rawtypes")
 	@GetMapping
-	public ResponseEntity<DadosRespostaPaginada<FranquiaListagem>> listar(@PageableDefault(size = 20) Pageable paginacao) {
+	public ResponseEntity listar(@PageableDefault(size = 20) Pageable paginacao) {
 		var page = repository.findAllByAtivoTrue(paginacao).map(FranquiaListagem::new);
 		DadosRespostaPaginada<FranquiaListagem> response = new DadosRespostaPaginada<>(page);
 		return ResponseEntity.ok(response);
@@ -63,8 +64,10 @@ public class FranquiaController {
 		repository.save(franquia);
 
 		var uri = uriBuilder.path("/franquia/{id}").buildAndExpand(franquia.getId()).toUri();
-
-		return ResponseEntity.created(uri).body(new DadoSemPaginacao(franquia));
+		
+		var resposta = ResponseEntity.created(uri).body(new DadoSemPaginacao(franquia));
+		
+		return resposta;
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -80,8 +83,10 @@ public class FranquiaController {
 		franquia.atualizarInformacoes(dados, segmentoRepository);
 
 		repository.save(franquia);
-
-		return ResponseEntity.ok(new DadoSemPaginacao(franquia));
+		
+		var resposta = new DadoSemPaginacao(franquia);
+		
+		return ResponseEntity.ok(resposta);
 	}
 
 	@SuppressWarnings("rawtypes")

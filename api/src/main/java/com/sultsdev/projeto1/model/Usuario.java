@@ -7,11 +7,15 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.sultsdev.projeto1.domain.dto.DadosAtualizacaoUsuario;
+import com.sultsdev.projeto1.domain.dto.DadosCadastroUsuario;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -36,7 +40,7 @@ public class Usuario implements UserDetails {
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {		
-		return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+		return List.of(new SimpleGrantedAuthority("ROLE_USER"), new SimpleGrantedAuthority("ROLE_ADMIN"));
 	}
 	@Override
 	public String getPassword() {
@@ -45,6 +49,20 @@ public class Usuario implements UserDetails {
 	@Override
 	public String getUsername() {
 		return login;
+	}
+	
+	public Usuario(DadosCadastroUsuario dados) {
+		this.login = dados.getLogin();
+		this.senha = dados.getSenha();
+	}
+	public void atualizarInformacoes(@Valid DadosAtualizacaoUsuario dados) {
+		if (dados.getLogin() != null) {
+			this.login = dados.getLogin();
+		}
+		if (dados.getSenha() != null) {
+			this.senha = dados.getSenha();
+		}
+		
 	}
 
 }

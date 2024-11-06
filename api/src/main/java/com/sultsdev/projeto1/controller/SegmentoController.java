@@ -30,6 +30,7 @@ public class SegmentoController {
 	@GetMapping("/{nome}")
 	public ResponseEntity<DadosRespostaPaginada<SegmentoListagem>> detalhar(@PathVariable String nome, Pageable pageable) {
 		var segmentos = repository.findByNomeContainingIgnoreCase(nome, pageable);
+		
 	    if (segmentos.hasContent()) {
 	    	var page = segmentos.map(SegmentoListagem::new);
 	    	DadosRespostaPaginada<SegmentoListagem> resposta = new DadosRespostaPaginada<>(page);
