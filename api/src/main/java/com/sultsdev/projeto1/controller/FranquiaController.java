@@ -1,7 +1,6 @@
 package com.sultsdev.projeto1.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.sultsdev.projeto1.domain.dto.DadoSemPaginacao;
 import com.sultsdev.projeto1.domain.dto.DadosAtualizacaoFranquia;
 import com.sultsdev.projeto1.domain.dto.DadosCadastroFranquia;
+import com.sultsdev.projeto1.domain.dto.DadosRespostaPaginada;
 import com.sultsdev.projeto1.domain.dto.FranquiaListagem;
 import com.sultsdev.projeto1.model.Franquia;
 import com.sultsdev.projeto1.model.Segmento;
@@ -37,9 +38,10 @@ public class FranquiaController {
 	private SegmentoRepository segmentoRepository;
 
 	@GetMapping
-	public ResponseEntity<Page<FranquiaListagem>> listar(@PageableDefault(size = 20) Pageable paginacao) {
+	public ResponseEntity<DadosRespostaPaginada<FranquiaListagem>> listar(@PageableDefault(size = 20) Pageable paginacao) {
 		var page = repository.findAllByAtivoTrue(paginacao).map(FranquiaListagem::new);
-		return ResponseEntity.ok(page);
+		DadosRespostaPaginada<FranquiaListagem> response = new DadosRespostaPaginada<>(page);
+		return ResponseEntity.ok(response);
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -62,19 +64,8 @@ public class FranquiaController {
 
 		var uri = uriBuilder.path("/franquia/{id}").buildAndExpand(franquia.getId()).toUri();
 
-		return ResponseEntity.created(uri).body(new FranquiaListagem(franquia));
+		return ResponseEntity.created(uri).body(new DadoSemPaginacao(franquia));
 	}
-
-//    @PutMapping
-//    @Transactional
-//    public ResponseEntity atualizar(@RequestBody @Valid DadosAtualizacaoFranquia dados) {
-//        
-//		var franquia = repository.getReferenceById(dados.id());
-//        
-//		franquia.atualizarInformacoes(dados);
-//
-//        return ResponseEntity.ok(new FranquiaListagem(franquia));
-//    }
 	
 	@SuppressWarnings("rawtypes")
 	@PutMapping
@@ -90,7 +81,7 @@ public class FranquiaController {
 
 		repository.save(franquia);
 
-		return ResponseEntity.ok(new FranquiaListagem(franquia));
+		return ResponseEntity.ok(new DadoSemPaginacao(franquia));
 	}
 
 	@SuppressWarnings("rawtypes")
