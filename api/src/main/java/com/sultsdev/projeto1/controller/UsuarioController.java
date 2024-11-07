@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -81,4 +82,26 @@ public class UsuarioController {
 
 		return ResponseEntity.ok(resposta);
 	}
+	
+	@SuppressWarnings("rawtypes")
+	@DeleteMapping("/{id}")
+	@Transactional
+	public ResponseEntity excluir(@PathVariable Long id) {
+		var usuario = repository.getReferenceById(id);
+		usuario.excluir();
+
+		return ResponseEntity.noContent().build();
+	}
+
+	@SuppressWarnings("rawtypes")
+	@PutMapping("/{id}")
+	@Transactional
+	public ResponseEntity reativar(@PathVariable Long id) {
+		var usuario = repository.getReferenceById(id);
+		usuario.reativar();
+
+		return ResponseEntity.noContent().build();
+	}
+
+	
 }

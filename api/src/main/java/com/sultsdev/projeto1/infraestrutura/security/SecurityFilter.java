@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.sultsdev.projeto1.model.Usuario;
 import com.sultsdev.projeto1.repository.UsuarioRepository;
 
 import jakarta.servlet.FilterChain;
@@ -29,13 +30,19 @@ public class SecurityFilter extends OncePerRequestFilter {
 		var tokenJWT = recuperarToken(request);
 
 		if (tokenJWT != null) {
-			var subject = tokenService.getSubject(tokenJWT);
-			var user = repository.findByLogin(subject);
-			var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-		}
-
+            var subject = tokenService.getSubject(tokenJWT);  
+            Usuario usuario = (Usuario) repository.findByLogin(subject);            
+            if (usuario != null && usuario.getAtivo()) {               
+                var authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {                
+                SecurityContextHolder.clearContext();
+                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Usuário está inativo");
+                return;
+            }
+        }
+		 
+		 
 		filterChain.doFilter(request, response);
 	}
 	
@@ -43,7 +50,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
 		var authorizationHeader = request.getHeader("Authorization");
 		
-		if (authorizationHeader != null) {
+		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 			return authorizationHeader.replace("Bearer", "").trim();
 		}
 

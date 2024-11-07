@@ -37,10 +37,12 @@ public class Usuario implements UserDetails {
 	private Long id;
 	private String login;
 	private String senha;
+	private Boolean ativo;
+	private String role;
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {		
-		return List.of(new SimpleGrantedAuthority("ROLE_USER"), new SimpleGrantedAuthority("ROLE_ADMIN"));
+		return List.of(new SimpleGrantedAuthority(role));
 	}
 	@Override
 	public String getPassword() {
@@ -54,7 +56,10 @@ public class Usuario implements UserDetails {
 	public Usuario(DadosCadastroUsuario dados) {
 		this.login = dados.getLogin();
 		this.senha = dados.getSenha();
+		this.ativo = dados.getAtivo();
+		this.role = dados.getRole();	
 	}
+	
 	public void atualizarInformacoes(@Valid DadosAtualizacaoUsuario dados) {
 		if (dados.getLogin() != null) {
 			this.login = dados.getLogin();
@@ -62,7 +67,19 @@ public class Usuario implements UserDetails {
 		if (dados.getSenha() != null) {
 			this.senha = dados.getSenha();
 		}
-		
+		if (dados.getRole() != null) {
+			this.role = dados.getRole();
+		}
 	}
+	
+	public void excluir() {
+		this.ativo = false;
+	}
+
+	public void reativar() {
+		this.ativo = true;
+	}
+	
+	
 
 }
