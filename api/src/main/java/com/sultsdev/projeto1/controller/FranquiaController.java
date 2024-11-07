@@ -1,5 +1,7 @@
 package com.sultsdev.projeto1.controller;
 
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -36,11 +39,29 @@ public class FranquiaController {
 
 	@Autowired
 	private SegmentoRepository segmentoRepository;
-	
+
+//	@SuppressWarnings("rawtypes")
+//	@GetMapping
+//	public ResponseEntity listar(@PageableDefault(size = 20) Pageable paginacao) {
+//		var page = repository.findAllByAtivoTrue(paginacao).map(FranquiaListagem::new);
+//		DadosRespostaPaginada<FranquiaListagem> response = new DadosRespostaPaginada<>(page);
+//		return ResponseEntity.ok(response);
+//	}
+
 	@SuppressWarnings("rawtypes")
 	@GetMapping
-	public ResponseEntity listar(@PageableDefault(size = 20) Pageable paginacao) {
-		var page = repository.findAllByAtivoTrue(paginacao).map(FranquiaListagem::new);
+	public ResponseEntity listar(@PageableDefault(size = 20) Pageable paginacao,
+			@RequestParam(required = false) String nome, 
+			@RequestParam(required = false) String segmento,
+			@RequestParam(required = false) String estadoSede,
+			@RequestParam(required = false) Double investimentoInicialStart,	
+			@RequestParam(required = false) Double investimentoInicialEnd,
+			@RequestParam(required = false) LocalDateTime dataUltimaAtualizacaoStart,
+			@RequestParam(required = false) LocalDateTime dataUltimaAtualizacaoEnd) {
+		var page = repository.findAllByFilters(nome, segmento, estadoSede, investimentoInicialStart,
+				investimentoInicialEnd, dataUltimaAtualizacaoStart, dataUltimaAtualizacaoEnd, paginacao)
+				.map(FranquiaListagem::new);
+		
 		DadosRespostaPaginada<FranquiaListagem> response = new DadosRespostaPaginada<>(page);
 		return ResponseEntity.ok(response);
 	}
@@ -64,12 +85,12 @@ public class FranquiaController {
 		repository.save(franquia);
 
 		var uri = uriBuilder.path("/franquia/{id}").buildAndExpand(franquia.getId()).toUri();
-		
+
 		var resposta = ResponseEntity.created(uri).body(new DadoSemPaginacao(franquia));
-		
+
 		return resposta;
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	@PutMapping
 	@Transactional
@@ -83,9 +104,9 @@ public class FranquiaController {
 		franquia.atualizarInformacoes(dados, segmentoRepository);
 
 		repository.save(franquia);
-		
+
 		var resposta = new DadoSemPaginacao(franquia);
-		
+
 		return ResponseEntity.ok(resposta);
 	}
 
