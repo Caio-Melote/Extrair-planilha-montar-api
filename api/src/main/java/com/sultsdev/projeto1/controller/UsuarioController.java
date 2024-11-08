@@ -97,9 +97,9 @@ public class UsuarioController {
 	@PutMapping("/{id}")
 	@Transactional
 	public ResponseEntity reativar(@PathVariable Long id) {
-		var usuario = repository.getReferenceById(id);
-		usuario.reativar();
-
+		var usuarioOptional = repository.getReferenceById(id);
+		usuarioOptional.reativar();
+		
 		return ResponseEntity.noContent().build();
 	}
 

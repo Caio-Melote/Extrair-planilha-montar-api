@@ -75,14 +75,20 @@ public class Franquia {
 			this.ativo = dados.getAtivo();
 		}
 		if (dados.getSegmento() != null) {
-			Segmento segmentoExistente = segmentoRepository.findByNome(dados.getSegmento().getNome());
-			if (segmentoExistente != null) {
-				this.segmento = segmentoExistente;
-			} else {
+			
+			Segmento segmentoExistenteNome = segmentoRepository.findByNome(dados.getSegmento().getNome());
+			Segmento segmentoExistenteId = segmentoRepository.findSegmentoById(dados.getSegmento().getId());
+			
+			if (segmentoExistenteNome != null) {
+				this.segmento = segmentoExistenteNome;
+			} else if(segmentoExistenteId != null) {
+				this.segmento = segmentoExistenteId;
+			} else if(dados.getSegmento().getNome() != null) {
 				Segmento novoSegmento = new Segmento(dados.getSegmento());
 				segmentoRepository.save(novoSegmento);
 				this.segmento = novoSegmento;
-			}
+			} 
+			
 		}
 	}
 

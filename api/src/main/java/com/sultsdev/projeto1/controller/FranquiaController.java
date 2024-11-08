@@ -40,28 +40,19 @@ public class FranquiaController {
 	@Autowired
 	private SegmentoRepository segmentoRepository;
 
-//	@SuppressWarnings("rawtypes")
-//	@GetMapping
-//	public ResponseEntity listar(@PageableDefault(size = 20) Pageable paginacao) {
-//		var page = repository.findAllByAtivoTrue(paginacao).map(FranquiaListagem::new);
-//		DadosRespostaPaginada<FranquiaListagem> response = new DadosRespostaPaginada<>(page);
-//		return ResponseEntity.ok(response);
-//	}
-
 	@SuppressWarnings("rawtypes")
 	@GetMapping
 	public ResponseEntity listar(@PageableDefault(size = 20) Pageable paginacao,
-			@RequestParam(required = false) String nome, 
-			@RequestParam(required = false) String segmento,
+			@RequestParam(required = false) String nome, @RequestParam(required = false) String segmento,
 			@RequestParam(required = false) String estadoSede,
-			@RequestParam(required = false) Double investimentoInicialStart,	
+			@RequestParam(required = false) Double investimentoInicialStart,
 			@RequestParam(required = false) Double investimentoInicialEnd,
 			@RequestParam(required = false) LocalDateTime dataUltimaAtualizacaoStart,
 			@RequestParam(required = false) LocalDateTime dataUltimaAtualizacaoEnd) {
 		var page = repository.findAllByFilters(nome, segmento, estadoSede, investimentoInicialStart,
 				investimentoInicialEnd, dataUltimaAtualizacaoStart, dataUltimaAtualizacaoEnd, paginacao)
 				.map(FranquiaListagem::new);
-		
+
 		DadosRespostaPaginada<FranquiaListagem> response = new DadosRespostaPaginada<>(page);
 		return ResponseEntity.ok(response);
 	}
@@ -70,11 +61,11 @@ public class FranquiaController {
 	@PostMapping
 	@Transactional
 	public ResponseEntity cadastrar(@RequestBody @Valid DadosCadastroFranquia dados, UriComponentsBuilder uriBuilder) {
-		Segmento segmentoExistente = segmentoRepository.findByNome(dados.getSegmento().getNome());
+		Segmento segmentoExistenteNome = segmentoRepository.findByNome(dados.getSegmento().getNome());
 
 		Segmento segmento;
-		if (segmentoExistente != null) {
-			segmento = segmentoExistente;
+		if (segmentoExistenteNome != null) {
+			segmento = segmentoExistenteNome;
 		} else {
 			segmento = new Segmento(dados.getSegmento()); // .getNome()
 			segmentoRepository.save(segmento);
@@ -98,6 +89,37 @@ public class FranquiaController {
 		var franquiaOptional = repository.findById(dados.getId());
 		if (franquiaOptional.isEmpty()) {
 			return ResponseEntity.notFound().build();
+		}
+
+		Segmento segmentoExistenteNome = segmentoRepository.findByNome(dados.getSegmento().getNome());
+		Segmento segmentoExistenteId = segmentoRepository.findSegmentoById(dados.getSegmento().getId());
+
+		if (dados.getSegmento().getId() == null && dados.getSegmento().getNome() == null) {
+			return ResponseEntity.badRequest().body("Segmento não informado");
+		}
+
+		if (segmentoExistenteNome != null && segmentoExistenteId != null) {
+			if (segmentoExistenteNome.getId() != segmentoExistenteId.getId()) {
+				return ResponseEntity.badRequest().body("Nome e Id divergentes, informe apenas o nome!");
+			}
+		}
+
+		if (segmentoExistenteNome != null && dados.getSegmento().getId() != null) {
+			return ResponseEntity.badRequest().body("ID inexsistente, informe apenas o nome!");
+		}
+
+		if (segmentoExistenteId != null && dados.getSegmento().getNome() != null) {
+			return ResponseEntity.badRequest().body("Nome inexsistente, mas o ID existe.");
+		}
+
+		if ((dados.getSegmento().getId() != null && dados.getSegmento().getNome() != null)
+				&& (segmentoExistenteNome == null && segmentoExistenteId == null)) {
+			return ResponseEntity.badRequest().body("Nome inexistente / ID inexistente");
+		}
+
+		if (dados.getSegmento().getId() != null && segmentoExistenteId == null
+				&& dados.getSegmento().getNome() == null) {
+			return ResponseEntity.badRequest().body("ID inexistente e nome não informado");
 		}
 
 		var franquia = franquiaOptional.get();

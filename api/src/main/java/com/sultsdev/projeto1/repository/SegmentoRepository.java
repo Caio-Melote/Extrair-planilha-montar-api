@@ -8,6 +8,8 @@ import com.sultsdev.projeto1.model.Segmento;
 
 public interface SegmentoRepository extends JpaRepository<Segmento, Long> {
 	
+	Segmento findSegmentoById(Long id);
+	
 	Segmento findByNome(String nome);
 	
 	Page<Segmento> findByNomeContainingIgnoreCase(String nome, Pageable pageable);
