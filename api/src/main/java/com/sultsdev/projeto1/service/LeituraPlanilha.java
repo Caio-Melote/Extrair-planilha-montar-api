@@ -1,6 +1,7 @@
 package com.sultsdev.projeto1.service;
 
 import java.io.FileInputStream;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
@@ -60,8 +61,8 @@ public class LeituraPlanilha {
 	                }
 	                
 	                Cell cell = linha.getCell(4);
-	                Double investimentoInicial = Double.parseDouble(cell.getStringCellValue());
-	                
+	                Double valorDouble = Double.parseDouble(cell.getStringCellValue());
+	                BigDecimal investimentoInicial = BigDecimal.valueOf(valorDouble);
 	                
 	                cell = linha.getCell(8);	                
 	                String dataString = cell.getStringCellValue();	              

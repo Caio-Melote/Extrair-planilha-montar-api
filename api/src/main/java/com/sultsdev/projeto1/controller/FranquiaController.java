@@ -1,5 +1,6 @@
 package com.sultsdev.projeto1.controller;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +46,8 @@ public class FranquiaController {
 	public ResponseEntity listar(@PageableDefault(size = 20) Pageable paginacao,
 			@RequestParam(required = false) String nome, @RequestParam(required = false) String segmento,
 			@RequestParam(required = false) String estadoSede,
-			@RequestParam(required = false) Double investimentoInicialStart,
-			@RequestParam(required = false) Double investimentoInicialEnd,
+			@RequestParam(required = false) BigDecimal investimentoInicialStart,
+			@RequestParam(required = false) BigDecimal investimentoInicialEnd,
 			@RequestParam(required = false) LocalDateTime dataUltimaAtualizacaoStart,
 			@RequestParam(required = false) LocalDateTime dataUltimaAtualizacaoEnd) {
 		var page = repository.findAllByFilters(nome, segmento, estadoSede, investimentoInicialStart,
@@ -83,14 +84,15 @@ public class FranquiaController {
 	}
 
 	@SuppressWarnings("rawtypes")
-	@PutMapping
+	@PutMapping("/{id}")
 	@Transactional
-	public ResponseEntity atualizar(@RequestBody @Valid DadosAtualizacaoFranquia dados) {
-		var franquiaOptional = repository.findById(dados.getId());
-		if (franquiaOptional.isEmpty()) {
-			return ResponseEntity.notFound().build();
-		}
-
+	public ResponseEntity atualizar(@PathVariable Long id, @RequestBody @Valid DadosAtualizacaoFranquia dados) {
+		
+		var franquiaOptional = repository.findById(id);
+//		if (franquiaOptional.isEmpty()) {
+//			return ResponseEntity.notFound().build();
+//		}
+		
 		Segmento segmentoExistenteNome = segmentoRepository.findByNome(dados.getSegmento().getNome());
 		Segmento segmentoExistenteId = segmentoRepository.findSegmentoById(dados.getSegmento().getId());
 
@@ -136,20 +138,11 @@ public class FranquiaController {
 	@DeleteMapping("/{id}")
 	@Transactional
 	public ResponseEntity excluir(@PathVariable Long id) {
-		var franquia = repository.getReferenceById(id);
-		franquia.excluir();
-
-		return ResponseEntity.noContent().build();
+		
+			var franquia = repository.getReferenceById(id);
+			franquia.excluir();
+			return ResponseEntity.noContent().build();	
 	}
 
-	@SuppressWarnings("rawtypes")
-	@PutMapping("/{id}")
-	@Transactional
-	public ResponseEntity reativar(@PathVariable Long id) {
-		var franquia = repository.getReferenceById(id);
-		franquia.reativar();
-
-		return ResponseEntity.noContent().build();
-	}
 
 }

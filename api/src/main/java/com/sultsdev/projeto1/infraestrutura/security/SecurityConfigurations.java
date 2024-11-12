@@ -25,8 +25,8 @@ public class SecurityConfigurations {
 		return http.csrf(csrf -> csrf.disable())
 				.sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(req -> {
+					req.requestMatchers("/usuario/**").hasRole("ADMIN");
 					req.requestMatchers("/login").permitAll();
-					req.requestMatchers("/usuario").hasRole("ADMIN");
 					req.anyRequest().authenticated();
 				}).addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
 				.build();

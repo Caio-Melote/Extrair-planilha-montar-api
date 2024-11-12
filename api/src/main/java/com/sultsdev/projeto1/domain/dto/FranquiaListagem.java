@@ -1,5 +1,6 @@
 package com.sultsdev.projeto1.domain.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -21,10 +22,10 @@ public class FranquiaListagem {
 	private int totalUnidades;
 	private String estadoSede;
 	private String email;
-	private Double investimentoInicial;
+	private BigDecimal investimentoInicial;
 	private String subsegmento;
 	private String tipoNegocio;
-	private LocalDateTime ultimaAtualizacao;
+	private ZonedDateTime ultimaAtualizacao;
 	private String url;
 	private Boolean ativo;
 	private Segmento segmento;
@@ -38,11 +39,11 @@ public class FranquiaListagem {
 		this.investimentoInicial = franquia.getInvestimentoInicial();
 		this.subsegmento = franquia.getSubsegmento();
 		this.tipoNegocio = franquia.getTipoNegocio();
-		
+
 		LocalDateTime ultimaAtualizacaoLocal = franquia.getUltimaAtualizacao();
-		ZonedDateTime ultimaAtualizacaoSP = ultimaAtualizacaoLocal.atZone(ZoneId.of("America/Sao_Paulo"));
-		this.ultimaAtualizacao = ultimaAtualizacaoSP.withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime();
-		
+		this.ultimaAtualizacao = ultimaAtualizacaoLocal.atZone(ZoneId.of("America/Sao_Paulo"))
+				.withZoneSameInstant(ZoneId.of("UTC"));
+
 		this.url = franquia.getUrl();
 		this.ativo = franquia.getAtivo();
 		this.segmento = franquia.getSegmento();

@@ -1,9 +1,12 @@
 package com.sultsdev.projeto1.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
 import com.sultsdev.projeto1.domain.dto.DadosAtualizacaoFranquia;
 import com.sultsdev.projeto1.domain.dto.DadosCadastroFranquia;
 import com.sultsdev.projeto1.repository.SegmentoRepository;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -33,7 +36,7 @@ public class Franquia {
 	private Integer totalUnidades;
 	private String estadoSede;
 	private String email;
-	private Double investimentoInicial;
+	private BigDecimal investimentoInicial;
 	private String subsegmento;
 	private String tipoNegocio;
 	private LocalDateTime ultimaAtualizacao;
@@ -75,20 +78,20 @@ public class Franquia {
 			this.ativo = dados.getAtivo();
 		}
 		if (dados.getSegmento() != null) {
-			
+
 			Segmento segmentoExistenteNome = segmentoRepository.findByNome(dados.getSegmento().getNome());
 			Segmento segmentoExistenteId = segmentoRepository.findSegmentoById(dados.getSegmento().getId());
-			
+
 			if (segmentoExistenteNome != null) {
 				this.segmento = segmentoExistenteNome;
-			} else if(segmentoExistenteId != null) {
+			} else if (segmentoExistenteId != null) {
 				this.segmento = segmentoExistenteId;
-			} else if(dados.getSegmento().getNome() != null) {
+			} else if (dados.getSegmento().getNome() != null) {
 				Segmento novoSegmento = new Segmento(dados.getSegmento());
 				segmentoRepository.save(novoSegmento);
 				this.segmento = novoSegmento;
-			} 
-			
+			}
+
 		}
 	}
 
