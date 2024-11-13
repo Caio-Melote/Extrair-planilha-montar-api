@@ -89,9 +89,6 @@ public class FranquiaController {
 	public ResponseEntity atualizar(@PathVariable Long id, @RequestBody @Valid DadosAtualizacaoFranquia dados) {
 		
 		var franquiaOptional = repository.findById(id);
-//		if (franquiaOptional.isEmpty()) {
-//			return ResponseEntity.notFound().build();
-//		}
 		
 		Segmento segmentoExistenteNome = segmentoRepository.findByNome(dados.getSegmento().getNome());
 		Segmento segmentoExistenteId = segmentoRepository.findSegmentoById(dados.getSegmento().getId());
