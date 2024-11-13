@@ -3,7 +3,6 @@ package com.sultsdev.projeto1.infraestrutura.security;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -45,7 +44,8 @@ public class TratarExceptionErros {
 	@SuppressWarnings("rawtypes")
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
 	public ResponseEntity handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex) {
-		return ResponseEntity.badRequest().body("O ID deve ser informado na URL");
+		
+		return ResponseEntity.badRequest().body("Erro no método e/ou na URL");
 	}
 	
 	@SuppressWarnings("rawtypes")
