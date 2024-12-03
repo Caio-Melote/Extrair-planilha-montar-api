@@ -137,9 +137,28 @@ public class FranquiaController {
 	public ResponseEntity excluir(@PathVariable Long id) {
 		
 			var franquia = repository.getReferenceById(id);
-			franquia.excluir();
+			franquia.getAtivo();
+			
+			if(franquia.getAtivo()) {
+				franquia.excluir();
+			} else { 
+				return ResponseEntity.notFound().build();
+			}
+			
 			return ResponseEntity.noContent().build();	
 	}
-
-
+	
+	@SuppressWarnings("rawtypes")
+	@GetMapping("/{id}")
+	public ResponseEntity pesquisar(@PathVariable Long id) {
+		
+			var franquia = repository.findById(id);
+			if(franquia.get().getAtivo()) {
+				//System.out.println("Franquia GET resposta: "+franquia.toString());
+				var resposta = ResponseEntity.ok(new DadoSemPaginacao(franquia.get()));
+				return resposta;
+			} else {
+				return ResponseEntity.notFound().build(); 
+			}			
+	}
 }
