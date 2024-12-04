@@ -35,7 +35,7 @@ public class UsuarioController {
 	@SuppressWarnings("rawtypes")
 	@GetMapping
 	public ResponseEntity listar(@PageableDefault(size = 20) Pageable paginacao) {
-		var page = repository.findAll(paginacao).map(UsuarioListagem::new);
+		var page = repository.findAllByAtivoTrue(paginacao).map(UsuarioListagem::new);
 		DadosRespostaPaginada<UsuarioListagem> response = new DadosRespostaPaginada<>(page);
 		return ResponseEntity.ok(response);
 	}
@@ -43,10 +43,9 @@ public class UsuarioController {
 	@SuppressWarnings("rawtypes")
 	@GetMapping("/{id}")
 	public ResponseEntity detalhar(@PathVariable Long id) {
-		var usuarioOptional = repository.findById(id);
+		var usuarioOptional = repository.findByIdAndAtivoTrue(id);
 		if (usuarioOptional.isPresent()) {
 			var resposta = new DadosUsuarioSemPaginacao(usuarioOptional.get());
-
 			return ResponseEntity.ok(resposta);
 		} else {
 			return ResponseEntity.notFound().build();
@@ -65,10 +64,10 @@ public class UsuarioController {
 	}
 
 	@SuppressWarnings("rawtypes")
-	@PutMapping
+	@PutMapping("/{id}")
 	@Transactional
-	public ResponseEntity atualizar(@RequestBody @Valid DadosAtualizacaoUsuario dados) {
-		var userOptional = repository.findById(dados.getId());
+	public ResponseEntity atualizar(@PathVariable Long id, @RequestBody @Valid DadosAtualizacaoUsuario dados) {
+		var userOptional = repository.findByIdAndAtivoTrue(id);
 		if (userOptional.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		}
@@ -87,21 +86,16 @@ public class UsuarioController {
 	@DeleteMapping("/{id}")
 	@Transactional
 	public ResponseEntity excluir(@PathVariable Long id) {
-		var usuario = repository.getReferenceById(id);
-		usuario.excluir();
-
-		return ResponseEntity.noContent().build();
-	}
-
-	@SuppressWarnings("rawtypes")
-	@PutMapping("/{id}")
-	@Transactional
-	public ResponseEntity reativar(@PathVariable Long id) {
-		var usuarioOptional = repository.getReferenceById(id);
-		usuarioOptional.reativar();
 		
-		return ResponseEntity.noContent().build();
+		var usuario = repository.getReferenceById(id);
+		
+		if(usuario.getAtivo()) {
+			usuario.excluir();
+		} else { 
+			return ResponseEntity.notFound().build();
+		}
+		
+		return ResponseEntity.noContent().build();	
 	}
-
 	
 }

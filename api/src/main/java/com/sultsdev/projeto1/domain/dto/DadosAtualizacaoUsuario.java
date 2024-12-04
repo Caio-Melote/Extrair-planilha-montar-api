@@ -1,6 +1,6 @@
 package com.sultsdev.projeto1.domain.dto;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,9 +12,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class DadosAtualizacaoUsuario {
 	
-	@NotNull
+	@Null
 	private Long id;
 	private String login;
 	private String senha;
 	private String role;
+	private Boolean ativo;
 }

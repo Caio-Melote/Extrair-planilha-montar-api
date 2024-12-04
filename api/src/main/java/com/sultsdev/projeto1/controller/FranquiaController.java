@@ -43,8 +43,9 @@ public class FranquiaController {
 
 	@SuppressWarnings("rawtypes")
 	@GetMapping
-	public ResponseEntity listar(@PageableDefault(size = 20) Pageable paginacao,
-			@RequestParam(required = false) String nome, @RequestParam(required = false) String segmento,
+	public ResponseEntity listar(@PageableDefault(size = 20) Pageable paginacao, 
+			@RequestParam(required = false) String nome, 
+			@RequestParam(required = false) String segmento,
 			@RequestParam(required = false) String estadoSede,
 			@RequestParam(required = false) BigDecimal investimentoInicialStart,
 			@RequestParam(required = false) BigDecimal investimentoInicialEnd,
@@ -89,46 +90,54 @@ public class FranquiaController {
 	public ResponseEntity atualizar(@PathVariable Long id, @RequestBody @Valid DadosAtualizacaoFranquia dados) {
 		
 		var franquiaOptional = repository.findById(id);
+		boolean verdadeiro = true;
 		
-		Segmento segmentoExistenteNome = segmentoRepository.findByNome(dados.getSegmento().getNome());
-		Segmento segmentoExistenteId = segmentoRepository.findSegmentoById(dados.getSegmento().getId());
+		if (franquiaOptional.get().getAtivo() || dados.getAtivo().equals(verdadeiro)) {
+			Segmento segmentoExistenteNome = segmentoRepository.findByNome(dados.getSegmento().getNome());
+			Segmento segmentoExistenteId = segmentoRepository.findSegmentoById(dados.getSegmento().getId());
 
-		if (dados.getSegmento().getId() == null && dados.getSegmento().getNome() == null) {
-			return ResponseEntity.badRequest().body("Segmento não informado");
-		}
-
-		if (segmentoExistenteNome != null && segmentoExistenteId != null) {
-			if (segmentoExistenteNome.getId() != segmentoExistenteId.getId()) {
-				return ResponseEntity.badRequest().body("Nome e Id divergentes, informe apenas o nome!");
+			if (dados.getSegmento().getId() == null && dados.getSegmento().getNome() == null) {
+				return ResponseEntity.badRequest().body("Segmento não informado");
 			}
+
+			if (segmentoExistenteNome != null && segmentoExistenteId != null) {
+				if (segmentoExistenteNome.getId() != segmentoExistenteId.getId()) {
+					return ResponseEntity.badRequest().body("Nome e Id divergentes, informe apenas o nome!");
+				}
+			}
+
+			if (segmentoExistenteNome != null && dados.getSegmento().getId() != null) {
+				return ResponseEntity.badRequest().body("ID inexsistente, informe apenas o nome!");
+			}
+
+			if (segmentoExistenteId != null && dados.getSegmento().getNome() != null) {
+				return ResponseEntity.badRequest().body("Nome inexsistente, mas o ID existe.");
+			}
+
+			if ((dados.getSegmento().getId() != null && dados.getSegmento().getNome() != null)
+					&& (segmentoExistenteNome == null && segmentoExistenteId == null)) {
+				return ResponseEntity.badRequest().body("Nome inexistente / ID inexistente");
+			}
+
+			if (dados.getSegmento().getId() != null && segmentoExistenteId == null
+					&& dados.getSegmento().getNome() == null) {
+				return ResponseEntity.badRequest().body("ID inexistente e nome não informado");
+			}
+
+			var franquia = franquiaOptional.get();
+			franquia.atualizarInformacoes(dados, segmentoRepository);
+
+			repository.save(franquia);
+
+			var resposta = new DadoSemPaginacao(franquia);
+
+			return ResponseEntity.ok(resposta);
+			
+		} else {
+			
+			return ResponseEntity.notFound().build();
 		}
-
-		if (segmentoExistenteNome != null && dados.getSegmento().getId() != null) {
-			return ResponseEntity.badRequest().body("ID inexsistente, informe apenas o nome!");
-		}
-
-		if (segmentoExistenteId != null && dados.getSegmento().getNome() != null) {
-			return ResponseEntity.badRequest().body("Nome inexsistente, mas o ID existe.");
-		}
-
-		if ((dados.getSegmento().getId() != null && dados.getSegmento().getNome() != null)
-				&& (segmentoExistenteNome == null && segmentoExistenteId == null)) {
-			return ResponseEntity.badRequest().body("Nome inexistente / ID inexistente");
-		}
-
-		if (dados.getSegmento().getId() != null && segmentoExistenteId == null
-				&& dados.getSegmento().getNome() == null) {
-			return ResponseEntity.badRequest().body("ID inexistente e nome não informado");
-		}
-
-		var franquia = franquiaOptional.get();
-		franquia.atualizarInformacoes(dados, segmentoRepository);
-
-		repository.save(franquia);
-
-		var resposta = new DadoSemPaginacao(franquia);
-
-		return ResponseEntity.ok(resposta);
+		
 	}
 
 	@SuppressWarnings("rawtypes")
